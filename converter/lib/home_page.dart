@@ -104,8 +104,6 @@ class HomePageState extends State<HomePage> {
                 ),
               ),
               onPressed: () {
-                print(temperatureCategory);
-                print(celsius);
                 if (temperatureCategory == 'Kelvin')
                   result = TemperatureConverter.celsiusToKelvin(
                           double.parse(celsius))
