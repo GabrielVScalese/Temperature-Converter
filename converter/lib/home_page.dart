@@ -82,6 +82,7 @@ class HomePageState extends State<HomePage> {
           Container(
             width: 300,
             child: TextField(
+              enabled: false,
               controller: txt,
               keyboardType: TextInputType.number,
               decoration: InputDecoration(
