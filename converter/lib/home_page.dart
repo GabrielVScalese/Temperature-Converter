@@ -1,8 +1,10 @@
-import 'package:converter/converter_controller.dart';
+import 'package:converter/input_controller.dart';
+import 'package:converter/result_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'app_controller.dart';
 import 'temperature_converter.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,9 +15,10 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  List<String> temperatureCategories = ['Kelvin', 'Fahrenheit'];
+  List<String> temperatureCategories = ['Celsius', 'Kelvin', 'Fahrenheit'];
 
-  String temperatureCategory = 'Kelvin';
+  String inputCategory = 'Kelvin';
+  String resultCategory = 'Kelvin';
   String celsius = '';
   String result = '';
 
@@ -24,6 +27,30 @@ class HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawer: Drawer(
+          child: Column(
+            children: [
+              UserAccountsDrawerHeader(),
+              ListTile(
+                leading: Icon(Icons.color_lens),
+                title: Text('Trocar tema'),
+                subtitle: Text('Tema escuro ou tema claro'),
+                onTap: () {
+                  AppController.instance.changeTheme();
+                },
+              ),
+              ListTile(
+                  leading: Icon(Icons.thermostat_outlined),
+                  title: Text('Escalas e conversões'),
+                  subtitle: Text('Saiba mais sobre')),
+              ListTile(
+                leading: Icon(Icons.info),
+                title: Text('Sobre'),
+                subtitle: Text('Autoria e objetivos'),
+              ),
+            ],
+          ),
+        ),
         appBar: AppBar(
           centerTitle: true,
           title: Text('Conversor de Temperatura'),
@@ -32,8 +59,9 @@ class HomePageState extends State<HomePage> {
           width: double.infinity,
           height: double.infinity,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Container(height: 90.0),
               Container(
                   child: Icon(
                 Icons.thermostat_outlined,
@@ -45,27 +73,30 @@ class HomePageState extends State<HomePage> {
               Container(
                 width: 300,
                 child: DropdownButton<String>(
-                  value: temperatureCategory,
+                  value: inputCategory,
                   isExpanded: true,
                   items: temperatureCategories
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: Text(
+                        value,
+                        textAlign: TextAlign.center,
+                      ),
                     );
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
-                      temperatureCategory = value;
-                      ConverterController.instance.changeResultText(
-                          'Temperatura em $temperatureCategory');
+                      inputCategory = value;
+                      InputController.instance.changeResultText(
+                          '(De) Temperatura em $inputCategory');
                       txt.text = '';
                     });
                   },
                 ),
               ),
               Container(
-                height: 40,
+                height: 20,
               ),
               Container(
                 width: 300,
@@ -75,13 +106,39 @@ class HomePageState extends State<HomePage> {
                   },
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: 'Digite a temperatura em celsius',
+                    labelText: InputController.instance.result,
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
+              Container(height: 10),
               Container(
-                height: 40,
+                width: 300,
+                child: DropdownButton<String>(
+                  value: resultCategory,
+                  isExpanded: true,
+                  items: temperatureCategories
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(
+                        value,
+                        textAlign: TextAlign.center,
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      resultCategory = value;
+                      ResultController.instance.changeResultText(
+                          '(Para) Temperatura em $resultCategory');
+                      txt.text = '';
+                    });
+                  },
+                ),
+              ),
+              Container(
+                height: 20,
               ),
               Container(
                 width: 300,
@@ -90,7 +147,7 @@ class HomePageState extends State<HomePage> {
                   controller: txt,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: ConverterController.instance.result,
+                    labelText: ResultController.instance.result,
                     border: OutlineInputBorder(),
                   ),
                 ),
@@ -108,7 +165,7 @@ class HomePageState extends State<HomePage> {
                     ),
                   ),
                   onPressed: () {
-                    if (temperatureCategory == 'Kelvin')
+                    if (inputCategory == 'Kelvin')
                       result = TemperatureConverter.celsiusToKelvin(
                               double.parse(celsius))
                           .toString();
