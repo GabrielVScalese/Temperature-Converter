@@ -1,11 +1,8 @@
-import 'package:converter/input_controller.dart';
-import 'package:converter/result_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'app_controller.dart';
-import 'temperature_converter.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -19,7 +16,7 @@ class HomePageState extends State<HomePage> {
 
   String inputCategory = 'Kelvin';
   String resultCategory = 'Kelvin';
-  String celsius = '';
+  String inputValue = '';
   String result = '';
 
   var txt = TextEditingController();
@@ -102,7 +99,7 @@ class HomePageState extends State<HomePage> {
                 width: 300,
                 child: TextField(
                   onChanged: (text) {
-                    celsius = text;
+                    inputValue = text;
                   },
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -165,14 +162,46 @@ class HomePageState extends State<HomePage> {
                     ),
                   ),
                   onPressed: () {
-                    if (inputCategory == 'Kelvin')
-                      result = TemperatureConverter.celsiusToKelvin(
-                              double.parse(celsius))
-                          .toString();
-                    else
-                      result = TemperatureConverter.celsiusToFahrenheit(
-                              double.parse(celsius))
-                          .toString();
+                    switch (inputCategory) {
+                      case 'Celsius':
+                        if (resultCategory == 'Kelvin')
+                          result = TemperatureConverter.celsiusToKelvin(
+                                  double.parse(inputValue))
+                              .toString();
+                        else if (resultCategory == 'Fahrenheit')
+                          result = TemperatureConverter.celsiusToFahrenheit(
+                                  double.parse(inputValue))
+                              .toString();
+                        else
+                          result = inputValue;
+                        break;
+
+                      case 'Kelvin':
+                        if (resultCategory == 'Celsius')
+                          result = TemperatureConverter.kelvinToCelsius(
+                                  double.parse(inputValue))
+                              .toString();
+                        else if (resultCategory == 'Fahrenheit')
+                          result = TemperatureConverter.kelvinToFahrenheint(
+                                  double.parse(inputValue))
+                              .toString();
+                        else
+                          result = inputValue;
+                        break;
+
+                      case 'Fahrenheit':
+                        if (resultCategory == 'Celsius')
+                          result = TemperatureConverter.fahrenheitToCelsius(
+                                  double.parse(inputValue))
+                              .toString();
+                        else if (resultCategory == 'Kelvin')
+                          result = TemperatureConverter.fahrenheitToKelvin(
+                                  double.parse(inputValue))
+                              .toString();
+                        else
+                          result = inputValue;
+                    }
+
                     txt.text = result;
                   })
             ],
