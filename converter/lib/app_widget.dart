@@ -1,7 +1,7 @@
 import 'package:converter/app_controller.dart';
 import 'package:converter/home_page.dart';
 import 'package:converter/informations_page.dart';
-import 'package:converter/models/author_page.dart';
+import 'package:converter/author_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
